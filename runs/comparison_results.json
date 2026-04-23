@@ -1,0 +1,11 @@
+[
+  {
+    "l1": 0.122969535620589,
+    "ssim": 0.9047730608609765,
+    "lpips": 0.06114612578561431,
+    "inference_ms": 0.8778917900053784,
+    "checkpoint": "/home/dina/Virtual-Makeup-Artist/runs/exp1_synthetic/ckpt_epoch_0150.pt",
+    "epoch": 150,
+    "experiment": "Synthetic (Expert System)"
+  }
+]
