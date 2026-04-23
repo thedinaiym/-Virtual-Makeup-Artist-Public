@@ -1,0 +1,8 @@
+{
+  "l1": 0.08119379013540252,
+  "ssim": 0.9062704149202755,
+  "lpips": 0.034428192273018854,
+  "inference_ms": 0.8771687699481845,
+  "checkpoint": "runs/exp1_synthetic_v2/ckpt_best.pt",
+  "epoch": 40
+}
