@@ -1,0 +1,16 @@
+.venv/
+ffhq-dataset/
+runs/
+checkpoints/
+wandb/
+__pycache__/
+*.pt
+*.pth
+*.zip
+*.tar
+*.parquet
+*.png
+*.jpg
+*.jpeg
+*.log
+.DS_Store

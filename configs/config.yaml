@@ -1,0 +1,77 @@
+# ============================================================
+#  Aesthetics-Aware Makeup Transfer — Master Config
+# ============================================================
+
+project:
+  name: "makeup_transfer"
+  seed: 42
+  wandb_project: "aesthetics-aware-makeup"
+
+paths:
+  ffhq_raw:       "data/ffhq"
+  synthetic_out:  "data/synthetic"
+  checkpoints:    "checkpoints"
+  runs:           "runs"
+
+# ─── Data Pipeline ───────────────────────────────────────────
+pipeline:
+  image_size: 256          # resize target before processing
+  min_face_confidence: 0.8 # mediapipe detection threshold
+  num_workers: 8
+  target_pairs: 5000       # synthetic pairs to generate
+
+  # Expert system thresholds
+  expert:
+    face_shapes: ["oval", "round", "square", "heart", "oblong"]
+    skin_undertones: ["warm", "cool", "neutral"]
+    # Lab lightness bins for undertone detection
+    lightness_bins: [60, 80]   # [dark|medium|light]
+
+  # Renderer
+  renderer:
+    blur_kernel: 25        # было 15 → мягче края
+    lip_alpha: 0.45        # было 0.55 → слабее помада
+    contour_alpha: 0.15    # было 0.35 → ЭТО ГЛАВНАЯ ПРИЧИНА БЕЛОГО ЛИЦА
+    blush_alpha: 0.25      # было 0.40 → слабее румяна
+    eyeshadow_alpha: 0.35  # было 0.50 → слабее тени
+    highlight_alpha: 0.10  # было 0.30 → почти убрать хайлайтер
+    seamless_clone: true
+    
+# ─── Model ───────────────────────────────────────────────────
+model:
+  in_channels: 5            # RGB (3) + lip mask (1) + skin mask (1)
+  out_channels: 3
+  base_features: 64
+  num_downs: 6              # U-Net depth (256→4 bottleneck)
+  style_dim: 128            # AdaIN style vector dimension
+  patch_size: 70            # PatchGAN receptive field
+
+# ─── Training ────────────────────────────────────────────────
+training:
+  epochs: 150
+  batch_size: 8
+  image_size: 256
+
+  # Optimizers
+  lr_g: 2.0e-4
+  lr_d: 2.0e-4
+  beta1: 0.5
+  beta2: 0.999
+
+  # Loss weights  λ1·cGAN + λ2·L1 + λ3·Perceptual
+  lambda_gan: 1.0
+  lambda_l1: 100.0
+  lambda_perceptual: 10.0
+
+  # Scheduler
+  decay_epoch: 100          # start linear LR decay at this epoch
+
+  # Logging
+  log_interval: 50          # steps
+  save_interval: 10         # epochs
+  val_samples: 8
+
+# ─── Evaluation ──────────────────────────────────────────────
+evaluation:
+  fid_batch: 50
+  metrics: ["fid", "l1", "ssim", "lpips", "inference_ms"]
