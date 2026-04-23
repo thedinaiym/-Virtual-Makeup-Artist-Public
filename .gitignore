@@ -1,6 +1,5 @@
 .venv/
 ffhq-dataset/
-runs/
 checkpoints/
 wandb/
 __pycache__/
